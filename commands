@@ -1,0 +1,36 @@
+// use what you have learned to add the following documents to the emps
+// collection in the employees database.
+{
+  fname: 'brent',
+  lname: 'george',
+  role: 'help desk',
+  salary: 15000,
+  previouspositions: [
+    {
+      previousrole: "intern",
+      previoussalary: 0
+    }
+  ]
+},
+
+// use the employees database that was setup before
+// our employees have group memebership.  If you want to query the array
+// of groups you need to use the $unwind function.
+db.emps.aggregate([{$unwind: "$groups"}]).pretty()
+
+// a more precise manner would be to specify the path of what you are trying
+// to $unwind
+db.emps.aggregate([{$unwind: {path: "$groups"}}]).pretty()
+
+// to find an objects location in an array include the index position
+db.emps.aggregate([{$unwind: {path: "$groups", includeArrayIndex: "arrayIndex"}}]).pretty()
+
+// something is still missing though, we cannot see our new emplyee.  add the
+// folloiwing to $unwind to see objects that may have a missing field
+db.emps.aggregate([{$unwind: {path: "$groups", preserveNullAndEmptyArrays: true}}]).pretty()
+
+// what about our previouspositions array, let's look at what unwind does to that
+db.emps.aggregate([{$unwind: "$previouspositions"}]).pretty()
+
+// use unwind to find out how many previouspositions an employee has had
+db.emps.aggregate([{$unwind: "$previouspositions"}, {$group:{_id:{"fname":"$fname"}, numberper:{$sum:1}}}])
