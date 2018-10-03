@@ -34,3 +34,5 @@ db.emps.aggregate([{$unwind: "$previouspositions"}]).pretty()
 
 // use unwind to find out how many previouspositions an employee has had
 db.emps.aggregate([{$unwind: "$previouspositions"}, {$group:{_id:{"fname":"$fname"}, numberper:{$sum:1}}}])
+
+________________________________________________________________________________
